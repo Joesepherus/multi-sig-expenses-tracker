@@ -1,0 +1,97 @@
+body {
+  background-color: #fff;
+  display: flex;
+  font-family: "Muli", sans-serif;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(to bottom right, #21d19f, #59c6bf);
+  margin: 0px;
+}
+
+#root {
+  width: 100%;
+}
+
+.appContainer {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: calc(50% - 10px) calc(50% - 10px); /* Two columns with equal width */
+  gap: 20px; /* Gap between grid items */
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.contract,
+.existing-contracts {
+  display: inline-block;
+  padding: 40px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+}
+
+h1 {
+  margin: 10px;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  color: #21d19f;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  text-transform: uppercase;
+  color: #aaa;
+  margin: 20px 0px;
+}
+
+input[type="text"],
+select {
+  padding: 6px;
+  font-size: 18px;
+}
+
+.button {
+  background-color: #21d19f;
+  color: white;
+  text-align: center;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin: 20px 0px;
+  padding: 9px 25px;
+  font-size: 14px;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+
+.existing-contract ul {
+  padding: 10px;
+  margin: 20px;
+  background-color: #eee;
+}
+
+.existing-contract ul > li {
+  list-style: none;
+  display: flex;
+  margin: 10px;
+}
+
+.existing-contract ul > li > div {
+  margin: 0 5px;
+}
+
+.existing-contract ul > li > :first-child {
+  font-weight: bold;
+}
+
+.existing-contract .complete {
+  color: #5aa75a;
+  text-align: center;
+}
+
+.proposal {
+  margin-bottom: 10px;
+}
