@@ -14,7 +14,7 @@ How To Start This App:
 3. start anvil at contract/
 4. npm start at app/
 5. forge create MultiSig --constructor-args "$public_key"  --rpc-url http://127.0.0.1:8545 --interactive
-6. interact with the react app using metamask
+6. interact with the react app using metamask on http://localhost:3000
 
 The Initial Plan Broken Into Steps
 
