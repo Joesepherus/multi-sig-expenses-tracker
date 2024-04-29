@@ -54,7 +54,7 @@ const proposalTypeOptions = [
 
 function App() {
   const [escrows, setEscrows] = useState([]);
-  console.log("escrows: ", escrows);
+
   const [account, setAccount] = useState();
   const [signer, setSigner] = useState();
   const [balance, setBalance] = useState();
@@ -98,7 +98,7 @@ function App() {
     setLoadingBalance(true);
     // get balance
     const contractBalance = await provider.getBalance(CONTRACT_ADDRESS);
-    console.log("contractBalance._hex: ", contractBalance._hex);
+
     setBalance(parseInt(contractBalance._hex));
     setLoadingBalance(false);
   }
@@ -109,18 +109,18 @@ function App() {
     const _ownersCount = parseInt(
       (await contractWithSigner.ownersCount())._hex
     );
-    console.log("_ownersCount: ", _ownersCount);
+
     setOwnersCount(_ownersCount);
     const _owners = [];
     for (let i = 0; i < _ownersCount; i++) {
       const owner = await contractWithSigner.owners(i);
-      console.log("owner: ", owner);
+
       const balance = await contractWithSigner.deposits(owner);
-      console.log("balance: ", balance);
+
       _owners.push({ address: owner, balance: parseInt(balance._hex) });
     }
     setOwners(_owners);
-    console.log("_owners: ", _owners);
+
     setLoadingOwners(false);
     return { _owners, _ownersCount };
   }
@@ -130,24 +130,22 @@ function App() {
     setLoadingProposals(true);
     const proposalCountHex = await contractWithSigner.proposalCount();
     const proposalCount = parseInt(proposalCountHex._hex);
-    console.log("proposalCount: ", proposalCount);
 
     const _proposals = [];
     for (let i = 0; i < proposalCount; i++) {
       const _confirmations = [];
       const proposal = await contractWithSigner.proposals(i);
       for (let j = 0; j < _ownersCount; j++) {
-        console.log("_owners[j]: ", _owners[j]);
         const confirmation = await contractWithSigner.confirmations(
           i,
           _owners[j].address
         );
         _confirmations.push(confirmation);
       }
-      console.log("confirmations: ", _confirmations);
+
       _proposals.push({ ...proposal, id: i, confirmations: _confirmations });
     }
-    console.log("_proposals: ", _proposals);
+
     setProposals(_proposals);
     setLoadingProposals(false);
   }
@@ -157,7 +155,7 @@ function App() {
     setLoadingDeposit(true);
 
     const _deposit = parseInt((await contractWithSigner.deposit())._hex);
-    console.log("_deposit: ", _deposit);
+
     setDepositMin(_deposit);
     setLoadingDeposit(false);
   }
@@ -167,7 +165,7 @@ function App() {
     setLoadingRequired(true);
 
     const _required = parseInt((await contractWithSigner.required())._hex);
-    console.log("_required: ", _required);
+
     setRequired(_required);
     setLoadingRequired(false);
   }
@@ -203,38 +201,32 @@ function App() {
   const setValue = (setter) => (evt) => setter(evt.target.value);
 
   const handleDepositMade = async (account, amount) => {
-    console.log(`Deposit made by ${account}: ${amount} wei`);
     // Fetch the updated balance after the deposit
     await getBalance();
     await getOwners();
   };
 
   const handleWithdrawAll = async () => {
-    console.log(`Withraw all made`);
     // Fetch the updated balance after the deposit
     await getBalance();
   };
 
   const handleDepositChanged = async () => {
-    console.log(`Deposit changed`);
     // Fetch the updated balance after the deposit
     await getDeposit();
   };
 
   const handleOwnersChanged = async () => {
-    console.log(`Owners changed`);
     // Fetch the updated balance after the deposit
     await getOwners();
   };
 
   const handleRequiredChanged = async () => {
-    console.log(`Required changed`);
     // Fetch the updated balance after the deposit
     await getRequired();
   };
 
   const handleAllChanged = async (proposalId) => {
-    console.log(`On all Changed ID: ${proposalId}`);
     // Fetch the updated balance after the deposit
     const { _owners, _ownersCount } = await getOwners();
 
@@ -248,7 +240,6 @@ function App() {
   };
 
   const handleProposalsChanged = async (proposalId) => {
-    console.log(`Proposal created ID: ${proposalId}`);
     // Fetch the updated balance after the deposit
     const { _owners, _ownersCount } = await getOwners();
 
@@ -256,8 +247,6 @@ function App() {
   };
 
   async function deposit() {
-    console.log("amount: ", amount);
-    console.log("CONTRACT_ADDRESS: ", CONTRACT_ADDRESS);
     try {
       setLoadingBalance(true);
       setLoadingOwners(true);
@@ -267,35 +256,30 @@ function App() {
         value: amount,
       });
       setAmount("");
-      console.log("Funds sent successfully");
-    } catch (error) {
-      console.error("Error sending funds:", error);
-    }
+    } catch (error) {}
   }
 
   async function executeProposal() {
-    const proposal = await contractWithSigner.executeProposal(executeProposalId);
+    const proposal = await contractWithSigner.executeProposal(
+      executeProposalId
+    );
     setExecuteProposalId("");
     setLoadingProposals(true);
     setLoadingBalance(true);
     setLoadingDeposit(true);
     setLoadingOwners(true);
     setLoadingRequired(true);
-    console.log("proposal: ", proposal);
   }
 
   async function confirmProposal() {
-    const proposal = await contractWithSigner.confirmProposal(confirmProposalId);
-    setConfirmProposalId("")
+    const proposal = await contractWithSigner.confirmProposal(
+      confirmProposalId
+    );
+    setConfirmProposalId("");
     setLoadingProposals(true);
-    console.log("proposal: ", proposal);
   }
 
   async function addProposal() {
-    console.log("proposalDestination: ", proposalDestination);
-    console.log("proposalValue: ", proposalValue);
-    console.log("proposalName: ", proposalName);
-    console.log("proposalType: ", proposalType);
     const proposal = await contractWithSigner.submitProposal(
       proposalDestination,
       proposalValue,
@@ -307,164 +291,174 @@ function App() {
     setProposalName("");
     setProposalType("");
     setLoadingProposals(true);
-    console.log("proposal: ", proposal);
   }
 
   return (
     <div className="appContainer">
-      <div className="contract">
-        <h2>Multi Sig Wallet Detail</h2>
-        <div>Available balance: {loadingBalance ? "Loading" : balance}</div>
-        <div>Owners count: {loadingOwners ? "Loading" : ownersCount}</div>
+      <h1>Multi Signature Expenses Tracker</h1>
+      <h2>What's this dApp about?</h2>
+      <div className="description">
+        It's a Multi Signature Wallet for Sharing Expenses Among A Group that's
+        traveling. This way it's easier to keep track of who paid what and how
+        much it cost. No more need to use excel or other apps. In this app you
+        first have the owner who creates the contract and can then add proposals
+        to: add other owners, set the required owners for a proposal to be
+        approved which is default 1, set deposit minimum, remove owners and
+        lastly withdraw the funds to all owners that have deposited atleast
+        minimum deposit.
+      </div>
+      <div className="contractContainer">
+        <div className="contract">
+          <h2>Multi Sig Wallet Detail</h2>
+          <div>Available balance: {loadingBalance ? "Loading" : balance}</div>
+          <div>Owners count: {loadingOwners ? "Loading" : ownersCount}</div>
 
-        <div>Required: {loadingRequired ? "Loading" : required}</div>
-        <div>Deposit Min: {loadingDeposit ? "Loading" : depositMin}</div>
-        <div>
-          <h3>Owners - Deposits</h3>
-          {loadingOwners
+          <div>Required: {loadingRequired ? "Loading" : required}</div>
+          <div>Deposit Min: {loadingDeposit ? "Loading" : depositMin}</div>
+          <div>
+            <h3>Owners - Deposits</h3>
+            {loadingOwners
+              ? "Loading"
+              : owners?.map((owner) => (
+                  <div>
+                    {owner.address} - {owner.balance}
+                  </div>
+                ))}
+          </div>
+        </div>
+        <div className="contract">
+          <h2>Add funds</h2>
+          <label>
+            Deposit Amount (in WEI)
+            <input
+              type="text"
+              id="wei"
+              value={amount}
+              onChange={setValue(setAmount)}
+            />
+          </label>
+
+          <div
+            className="button"
+            onClick={(e) => {
+              e.preventDefault();
+              deposit();
+            }}
+          >
+            Add funds
+          </div>
+        </div>
+        <div className="contract">
+          <h2>Proposals</h2>
+          {loadingProposals
             ? "Loading"
-            : owners?.map((owner) => (
-                <div>
-                  {owner.address} - {owner.balance}
+            : proposals?.map((proposal) => (
+                <div className="proposal">
+                  <div>ID: {proposal.id}</div>
+                  <div>Type: {ProposalType[proposal.typeName]}</div>
+                  <div>Address: {proposal.destination}</div>
+                  <div>Value: {parseInt(proposal?.value?._hex)}</div>
+                  <div>
+                    Confirmations:{" "}
+                    {proposal.confirmations.reduce((acc, currentValue) => {
+                      return acc + (currentValue ? 1 : 0);
+                    }, 0)}
+                  </div>
+                  <div>Executed: {proposal.executed ? "Yes" : "No"}</div>
                 </div>
               ))}
         </div>
-      </div>
-      <div className="contract">
-        <h2>Add funds</h2>
-        <label>
-          Deposit Amount (in WEI)
-          <input
-            type="text"
-            id="wei"
-            value={amount}
-            onChange={setValue(setAmount)}
-          />
-        </label>
+        <div className="contract">
+          <h2>Add Proposal</h2>
+          <label>
+            Proposal Destination
+            <input
+              type="text"
+              id="wei"
+              value={proposalDestination}
+              onChange={setValue(setProposalDestination)}
+            />
+          </label>
+          <label>
+            Proposal Value
+            <input
+              type="text"
+              id="wei"
+              value={proposalValue}
+              onChange={setValue(setProposalValue)}
+            />
+          </label>
+          <label>
+            Proposal Name
+            <input
+              type="text"
+              id="wei"
+              value={proposalName}
+              onChange={setValue(setProposalName)}
+            />
+          </label>
+          <label>
+            Proposal Type
+            <select value={proposalType} onChange={setValue(setProposalType)}>
+              {proposalTypeOptions.map((proposalType) => (
+                <option value={proposalType.value}>{proposalType.name}</option>
+              ))}
+            </select>
+          </label>
 
-        <div
-          className="button"
-          onClick={(e) => {
-            e.preventDefault();
-            deposit();
-          }}
-        >
-          Add funds
+          <div
+            className="button"
+            onClick={(e) => {
+              e.preventDefault();
+              addProposal();
+            }}
+          >
+            Add Proposal
+          </div>
         </div>
-      </div>
-      <div className="contract">
-        <h2>Proposals</h2>
-        {loadingProposals
-          ? "Loading"
-          : proposals?.map((proposal) => (
-              <div className="proposal">
-                <div>ID: {proposal.id}</div>
-                <div>Type: {ProposalType[proposal.typeName]}</div>
-                <div>Address: {proposal.destination}</div>
-                <div>Value: {parseInt(proposal?.value?._hex)}</div>
-                <div>
-                  Confirmations:{" "}
-                  {proposal.confirmations.reduce((acc, currentValue) => {
-                    return acc + (currentValue ? 1 : 0);
-                  }, 0)}
-                </div>
-                <div>Executed: {proposal.executed ? "Yes" : "No"}</div>
-              </div>
-            ))}
-      </div>
+        <div className="contract">
+          <h2>Confirm proposal</h2>
+          <label>
+            Proposal ID
+            <input
+              type="text"
+              id="wei"
+              value={confirmProposalId}
+              onChange={setValue(setConfirmProposalId)}
+            />
+          </label>
 
-      <div className="contract">
-        <h2>Add Proposal</h2>
-        <label>
-          Proposal Destination
-          <input
-            type="text"
-            id="wei"
-            value={proposalDestination}
-            onChange={setValue(setProposalDestination)}
-          />
-        </label>
-        <label>
-          Proposal Value
-          <input
-            type="text"
-            id="wei"
-            value={proposalValue}
-            onChange={setValue(setProposalValue)}
-          />
-        </label>
-        <label>
-          Proposal Name
-          <input
-            type="text"
-            id="wei"
-            value={proposalName}
-            onChange={setValue(setProposalName)}
-          />
-        </label>
-        <label>
-          Proposal Type
-          <select value={proposalType} onChange={setValue(setProposalType)}>
-            {proposalTypeOptions.map((proposalType) => (
-              <option value={proposalType.value}>{proposalType.name}</option>
-            ))}
-          </select>
-        </label>
-
-        <div
-          className="button"
-          onClick={(e) => {
-            e.preventDefault();
-            addProposal();
-          }}
-        >
-          Add Proposal
+          <div
+            className="button"
+            onClick={(e) => {
+              e.preventDefault();
+              confirmProposal();
+            }}
+          >
+            Confirm Proposal
+          </div>
         </div>
-      </div>
+        <div className="contract">
+          <h2>Execute proposal</h2>
+          <label>
+            Proposal ID
+            <input
+              type="text"
+              id="wei"
+              value={executeProposalId}
+              onChange={setValue(setExecuteProposalId)}
+            />
+          </label>
 
-      <div className="contract">
-        <h2>Confirm proposal</h2>
-        <label>
-          Proposal ID
-          <input
-            type="text"
-            id="wei"
-            value={confirmProposalId}
-            onChange={setValue(setConfirmProposalId)}
-          />
-        </label>
-
-        <div
-          className="button"
-          onClick={(e) => {
-            e.preventDefault();
-            confirmProposal();
-          }}
-        >
-          Confirm Proposal
-        </div>
-      </div>
-
-      <div className="contract">
-        <h2>Execute proposal</h2>
-        <label>
-          Proposal ID
-          <input
-            type="text"
-            id="wei"
-            value={executeProposalId}
-            onChange={setValue(setExecuteProposalId)}
-          />
-        </label>
-
-        <div
-          className="button"
-          onClick={(e) => {
-            e.preventDefault();
-            executeProposal();
-          }}
-        >
-          Execute Proposal
+          <div
+            className="button"
+            onClick={(e) => {
+              e.preventDefault();
+              executeProposal();
+            }}
+          >
+            Execute Proposal
+          </div>
         </div>
       </div>
     </div>

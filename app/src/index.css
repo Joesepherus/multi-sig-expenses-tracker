@@ -14,6 +14,9 @@ body {
 
 .appContainer {
   padding: 20px;
+}
+
+.contractContainer {
   display: grid;
   grid-template-columns: calc(50% - 10px) calc(50% - 10px); /* Two columns with equal width */
   gap: 20px; /* Gap between grid items */
@@ -33,11 +36,8 @@ body {
   background-color: #fff;
 }
 
-h1 {
-  margin: 10px;
-  padding: 10px;
-  border-bottom: 1px solid #eee;
-  color: #21d19f;
+.description {
+  padding-bottom: 20px;
 }
 
 label {
